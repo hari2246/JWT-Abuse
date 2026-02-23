@@ -10,6 +10,7 @@ const AdminDashboard = () => {
       setAlerts(res.data.alerts);
     });
   };
+  <Link to="/admin/risk">User Risk Scores</Link>
 
   useEffect(() => {
     loadAlerts();
@@ -32,7 +33,21 @@ const AdminDashboard = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h2>Admin Alerts</h2>
-        <Link to="/admin/charts">View Charts</Link>
+        <div style={{ marginBottom: "15px" }}>
+          <Link to="/admin/charts" style={{ marginRight: "15px" }}>
+            View Charts
+          </Link>
+
+          <Link to="/admin/logs" style={{ marginRight: "15px" }}>
+            View Logs
+          </Link>
+
+          <Link to="/admin/risk">
+            User Risk Scores
+          </Link>
+        </div>
+
+        <hr />
       {alerts.length === 0 && <p>No alerts found</p>}
 
       {alerts.map((a) => (

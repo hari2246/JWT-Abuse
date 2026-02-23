@@ -1,6 +1,8 @@
 import Alert from "../models/Alert.js";
 import RequestLog from "../models/RequestLog.js";
 import RevokedToken from "../models/RevokedToken.js";
+import { getUserBaseline } from "./userBehavior.js";
+import { updateRiskScore } from "./riskEngine.js";
 
 // helper to create alert (avoid duplicates)
 const createAlert = async ({ userId, tokenHash, type, severity, reason }) => {
@@ -12,13 +14,16 @@ const createAlert = async ({ userId, tokenHash, type, severity, reason }) => {
   });
 
   if (!exists) {
-    await Alert.create({
+    const alert = await Alert.create({
       userId,
       tokenHash,
       type,
       severity,
       reason,
     });
+
+    // 🔹 update user risk score
+    await updateRiskScore(userId, type);
   }
 };
 
@@ -54,23 +59,32 @@ export const detectTokenReplay = async ({ userId, tokenHash, ipAddress }) => {
   }
 };
 
-// ✅ RULE 2: RATE ABUSE (too many requests in short time)
+// ✅ RULE 2: USER-BASED RATE ABUSE (adaptive threshold)
 export const detectRateAbuse = async ({ userId, tokenHash }) => {
+
   const windowSeconds = 10;
-  const maxRequests = 30;
+
+  // 🔹 Get user behaviour baseline
+  const baseline = await getUserBaseline(userId);
 
   const count = await RequestLog.countDocuments({
     userId,
     createdAt: { $gte: new Date(Date.now() - windowSeconds * 1000) },
   });
 
-  if (count > maxRequests) {
+  // 🔹 Adaptive threshold
+  // minimum 20 requests, otherwise based on user behaviour
+  const adaptiveThreshold = Math.max(20, baseline.avgRate * 5);
+
+  if (count > adaptiveThreshold) {
     await createAlert({
       userId,
       tokenHash,
       type: "RATE_ABUSE",
       severity: "MEDIUM",
-      reason: `User exceeded ${maxRequests} requests in ${windowSeconds} seconds (possible automation).`,
+      reason: `User exceeded adaptive threshold (${Math.round(
+        adaptiveThreshold
+      )}) within ${windowSeconds}s (behaviour anomaly).`,
     });
   }
 };

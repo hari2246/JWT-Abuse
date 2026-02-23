@@ -7,6 +7,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import { AuthProvider } from "./auth/AuthContext";
 import AdminLogs from "./pages/AdminLogs";
 import AdminCharts from "./pages/AdminCharts";
+import AdminRisk from "./pages/AdminRisk";
 
 
 
@@ -50,6 +51,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminCharts />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/risk"
+            element={
+              <ProtectedRoute>
+                <AdminRisk />
               </ProtectedRoute>
             }
           />

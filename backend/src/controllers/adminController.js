@@ -1,6 +1,13 @@
 import RequestLog from "../models/RequestLog.js";
 import Alert from "../models/Alert.js";
 import RevokedToken from "../models/RevokedToken.js";
+import RiskScore from "../models/RiskScore.js";
+
+export const getRiskScores = async (req, res) => {
+  const scores = await RiskScore.find().populate("userId", "email");
+
+  res.json({ scores });
+};
 
 export const getLogs = async (req, res) => {
   const logs = await RequestLog.find().sort({ createdAt: -1 }).limit(200);
