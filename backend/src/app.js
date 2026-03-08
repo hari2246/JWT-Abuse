@@ -9,6 +9,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+import { securityMonitor } from "./middleware/securityMonitor.js"
+
+app.use(securityMonitor)
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
