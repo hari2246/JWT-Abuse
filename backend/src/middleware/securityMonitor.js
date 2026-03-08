@@ -1,7 +1,7 @@
-import { runSecurityChecks } from "../utils/detectionEngine.js"
-import RequestLog from "../models/RequestLog.js"
+import RequestLog from "../models/RequestLog.js";
+import { processSecurityEvent } from "../utils/securityPipeline.js";
 
-export const securityMonitor = async (req,res,next) => {
+export const securityMonitor = async (req,res,next)=>{
 
   const context = {
     userId: req.user?.id,
@@ -10,11 +10,13 @@ export const securityMonitor = async (req,res,next) => {
     userAgent: req.headers["user-agent"],
     endpoint: req.originalUrl,
     role: req.user?.role
-  }
+  };
 
-  await RequestLog.create(context)
+  // store request log
+  await RequestLog.create(context);
 
-  await runSecurityChecks(context)
+  // run security pipeline
+  await processSecurityEvent(context);
 
-  next()
-}
+  next();
+};

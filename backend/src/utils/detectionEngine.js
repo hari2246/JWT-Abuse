@@ -1,9 +1,11 @@
-// import Alert from "../models/Alert.js";
-// import RequestLog from "../models/RequestLog.js";
-// import RevokedToken from "../models/RevokedToken.js";
-// import { getUserBaseline } from "./userBehavior.js";
-// import { updateRiskScore } from "./riskEngine.js";
-// import { getKnownIPs } from "./userEnvironment.js";
+import Alert from "../models/Alert.js";
+import RequestLog from "../models/RequestLog.js";
+import RevokedToken from "../models/RevokedToken.js";
+import { getUserBaseline } from "./userBehavior.js";
+import { updateRiskScore } from "./riskEngine.js";
+import { getKnownIPs } from "./userEnvironment.js";
+import { getUserBaseline } from "./userBehavior.js";
+import { geoDistance } from "./userEnvironment.js";
 
 // // helper to create alert (avoid duplicates)
 // const createAlert = async ({ userId, tokenHash, type, severity, reason }) => {

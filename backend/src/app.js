@@ -18,6 +18,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 import adminRoutes from "./routes/adminRoutes.js";
 
+import { securityMonitor } from "./middleware/securityMonitor.js";
+
+app.use(securityMonitor);
+
 app.use("/api/admin", adminRoutes);
 
 
